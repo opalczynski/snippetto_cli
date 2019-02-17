@@ -1,13 +1,9 @@
+from snipetto.core.services import CoreServices
+
+
 class TagsService:
-    @classmethod
-    def list(cls):
-        pass
+    tags_list = CoreServices.get_tags_list_url()
 
     @classmethod
-    def detail(cls, name):
-        pass
-
-
-    @classmethod
-    def delete(cls, name):
+    def list_tags(cls):
         pass

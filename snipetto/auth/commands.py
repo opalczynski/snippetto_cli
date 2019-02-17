@@ -1,20 +1,17 @@
+from getpass import getpass
 
 import click
 
 from snipetto.auth.services import AuthService
 
 
-@click.group('auth')
-def auth():
-    pass
+@click.command()
+def configure():
+    login = str(input("Username:"))
+    password = getpass()
+    AuthService.login(login, password)
 
 
-@auth.command()
-@click.argument('login')
-@click.argument('password')
-def login(user_login, user_password):
-    AuthService.login(user_login, user_password)
-
-@auth.command()
-def logouot():
+@click.command()
+def logout():
     AuthService.logout()

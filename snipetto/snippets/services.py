@@ -1,16 +1,20 @@
 class SnippetsService:
     @classmethod
-    def list(cls):
+    def search_snippet(cls, slug, tags):
         pass
 
     @classmethod
-    def detail(cls, name):
+    def get_snippet(cls, name):
         pass
 
     @classmethod
-    def delete(cls, name):
+    def delete_snippet(cls, name):
         pass
 
     @classmethod
-    def create(cls, slug, tags, snippet):
+    def add_snippet(cls, slug, tags, file):
+        pass
+
+    @classmethod
+    def edit_snippet(cls, slug, tags):
         pass

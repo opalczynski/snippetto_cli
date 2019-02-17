@@ -7,9 +7,13 @@ class AuthService:
     @classmethod
     def login(cls, login, password):
         # login logic here
-        token = f'{login} {password}' # real logic soon
+        token = cls._login(login, password)
         cls.set_token(token)
         return cls.get_token()
+
+    @staticmethod
+    def _login(login, password):
+        return f'{login} {password}'  # todo
 
     @classmethod
     def logout(cls):
