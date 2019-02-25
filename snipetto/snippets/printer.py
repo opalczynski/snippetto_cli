@@ -14,7 +14,11 @@ class Printer:
         if message:
             click.echo(message)
 
-    def print(self, message=None):
+    def print(self, message=None, snippet_only=False):
+        if snippet_only:
+            for json_data in self.json_snippet:
+                self.print_snippet(json_data, snippet_only=snippet_only)
+            return
         self.print_message(message=message)
         for json_data in self.json_snippet:
             self.print_separator()

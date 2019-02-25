@@ -7,8 +7,10 @@ from snipetto.snippets.printer import Printer
 
 @click.command(name='get')
 @click.argument('slug', type=str)
+@click.option('--snippet-only', 'snippet_only', is_flag=True,
+              type=bool, required=False)
 @click.pass_context
-def get_snippet(ctx, slug):
+def get_snippet(ctx, slug, snippet_only):
     api = ctx.obj['api']
     instance_id = api.get_id_by_slug(slug)
     response = api.request(
@@ -16,7 +18,7 @@ def get_snippet(ctx, slug):
         action=ActionTypeE.GET,
         id=instance_id,
     )
-    Printer(json_snippet=response).print()
+    Printer(json_snippet=response).print(snippet_only=snippet_only)
 
 
 @click.command(name='delete')
