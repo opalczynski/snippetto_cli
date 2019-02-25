@@ -1,5 +1,3 @@
-import json
-
 import click
 from click import ClickException
 from snipetto.core.services import ActionTypeE
@@ -32,7 +30,9 @@ def delete_snippet(ctx, slug):
         action=ActionTypeE.DELETE,
         id=instance_id,
     )
-    Printer(json_snippet=response).print_message(message='Your snippet has been deleted.')
+    Printer(json_snippet=response).print_message(
+        message='Your snippet has been deleted.'
+    )
 
 
 @click.command(name='add')
@@ -64,7 +64,9 @@ def add_snippet(ctx, slug, tags, file, start, end):
             "slug": slug
         }
     )
-    Printer(json_snippet=response).print(message='Your snippet has been added.')
+    Printer(json_snippet=response).print(
+        message='Your snippet has been added.'
+    )
 
 
 @click.command(name='edit')
@@ -94,7 +96,9 @@ def edit_snippet(ctx, slug, tags, file):
         id=instance_id,
         json=json_data
     )
-    Printer(json_snippet=edit_response).print(message='Your snippet has been edited.')
+    Printer(json_snippet=edit_response).print(
+        message='Your snippet has been edited.'
+    )
 
 
 @click.command(name='search')

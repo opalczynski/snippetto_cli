@@ -117,8 +117,9 @@ class APIService:
 
     def get_id_by_slug(self, slug):
         """
-        This will apply only for snippet for now - and basically for models that
-        have slug (which is more human like) - as API mainly rely on objects IDs.
+        This will apply only for snippet for now - and basically for models
+        that have slug (which is more human like) - as API mainly rely on
+        objects IDs.
         """
         response = self.request(
             'snippets', 'list',

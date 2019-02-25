@@ -34,7 +34,9 @@ class Printer:
         click.echo("Created at: {}".format(json_data['created_at']))
         click.echo("Updated at: {}".format(json_data['updated_at']))
         click.echo("Author: {}".format(json_data['author']['username']))
-        click.echo("Tags: {}".format(', '.join(tag['name'] for tag in json_data['tags'])))
+        click.echo("Tags: {}".format(
+            ', '.join(tag['name'] for tag in json_data['tags']))
+        )
 
     def print_snippet(self, json_data, snippet_only=False):
         if snippet_only:
