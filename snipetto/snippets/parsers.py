@@ -1,0 +1,11 @@
+
+
+class TagParser:
+
+    def __init__(self, raw_tags):
+        self.raw_tags = raw_tags
+
+    def parse(self):
+        return [
+            {'name': tag} for tag in self.raw_tags.split(',')
+        ]

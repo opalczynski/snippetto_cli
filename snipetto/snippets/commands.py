@@ -1,34 +1,24 @@
-import json
-
 import click
 from click import ClickException
 from snipetto.core.services import ActionTypeE
+from snipetto.snippets.parsers import TagParser
+from snipetto.snippets.printer import Printer
 
 
 @click.command(name='get')
 @click.argument('slug', type=str)
+@click.option('--snippet-only', 'snippet_only', is_flag=True,
+              type=bool, required=False)
 @click.pass_context
-def get_snippet(ctx, slug):
+def get_snippet(ctx, slug, snippet_only):
     api = ctx.obj['api']
-    # TODO: make some helper for that too.
-    # make search by slug to find id first
-    response = api.request(
-        'snippets', 'list',
-        action=ActionTypeE.LIST,
-        params={
-            "slug": slug
-        }
-    )
-    if len(response["results"]) != 1:
-        raise ClickException("More (or None) snippets found. "
-                             "Check out your slug.")
-    instance_id = response["results"][0]["id"]
+    instance_id = api.get_id_by_slug(slug)
     response = api.request(
         'snippets', 'list',
         action=ActionTypeE.GET,
         id=instance_id,
     )
-    click.echo(json.dumps(response, indent=4))
+    Printer(json_snippet=response).print(snippet_only=snippet_only)
 
 
 @click.command(name='delete')
@@ -36,25 +26,15 @@ def get_snippet(ctx, slug):
 @click.pass_context
 def delete_snippet(ctx, slug):
     api = ctx.obj['api']
-    # TODO: make some helper for that too.
-    # make search by slug to find id first
-    response = api.request(
-        'snippets', 'list',
-        action=ActionTypeE.LIST,
-        params={
-            "slug": slug
-        }
-    )
-    if len(response["results"]) != 1:
-        raise ClickException("More (or None) snippets found. "
-                             "Check out your slug.")
-    instance_id = response["results"][0]["id"]
+    instance_id = api.get_id_by_slug(slug)
     response = api.request(
         'snippets', 'list',
         action=ActionTypeE.DELETE,
         id=instance_id,
     )
-    click.echo(json.dumps(response, indent=4))
+    Printer(json_snippet=response).print_message(
+        message='Your snippet has been deleted.'
+    )
 
 
 @click.command(name='add')
@@ -62,22 +42,33 @@ def delete_snippet(ctx, slug):
 @click.option('--tags', 'tags', type=str, required=True)
 # for now auto adding just from the file
 @click.option('--file', 'file', type=click.File('r'), required=True)
+@click.option('--start', 'start', type=int, required=False)
+@click.option('--end', 'end', type=int, required=False)
 @click.pass_context
-def add_snippet(ctx, slug, tags, file):
+def add_snippet(ctx, slug, tags, file, start, end):
     api = ctx.obj['api']
-    tags_list = []
-    for tag in tags.split(','):
-        tags_list.append({'name': tag})
+    tags = TagParser(raw_tags=tags).parse()
+
+    if start and end:
+        if start > end:
+            raise ClickException('Start can not be bigger than end.')
+        lines = file.readlines()[start:end]
+        snippet = ''.join(lines)
+    else:
+        snippet = file.read()
+
     response = api.request(
         'snippets', 'list',
         action=ActionTypeE.CREATE,
         json={
-            "snippet": file.read(),
-            "tags": tags_list,
+            "snippet": snippet,
+            "tags": tags,
             "slug": slug
         }
     )
-    click.echo(json.dumps(response, indent=4))
+    Printer(json_snippet=response).print(
+        message='Your snippet has been added.'
+    )
 
 
 @click.command(name='edit')
@@ -88,31 +79,14 @@ def add_snippet(ctx, slug, tags, file):
 @click.pass_context
 def edit_snippet(ctx, slug, tags, file):
     api = ctx.obj['api']
-    # TODO: make some helper for that too.
-    # make search by slug to find id first
-    response = api.request(
-        'snippets', 'list',
-        action=ActionTypeE.LIST,
-        params={
-            "slug": slug
-        }
-    )
-    if len(response["results"]) != 1:
-        raise ClickException("More (or None) snippets found. "
-                             "Check out your slug.")
-    instance_id = response["results"][0]["id"]
-    # TODO: make some helper for that
-    tags_list = []
-
-    if tags is not None:
-        for tag in tags.split(','):
-            tags_list.append({'name': tag})
+    instance_id = api.get_id_by_slug(slug)
+    tags = TagParser(raw_tags=tags).parse()
     if not file and not tags:
         raise ClickException("Sorry, nothing to edit.")
     json_data = {}
     for option in [
         ('snippet', file.read() if file else None),
-        ('tags', tags_list),
+        ('tags', tags),
         ('slug', slug)
     ]:
         if option[1]:
@@ -124,7 +98,9 @@ def edit_snippet(ctx, slug, tags, file):
         id=instance_id,
         json=json_data
     )
-    click.echo(json.dumps(edit_response, indent=4))
+    Printer(json_snippet=edit_response).print(
+        message='Your snippet has been edited.'
+    )
 
 
 @click.command(name='search')
@@ -145,7 +121,7 @@ def search_snippet(ctx, slug, tags):
             "slug": slug
         }
     )
-    click.echo(json.dumps(response, indent=4))
+    Printer(json_snippet=response, is_list=True).print()
 
 
 @click.command(name='list')
@@ -155,4 +131,4 @@ def list_snippet(ctx):
     response = api.request(
         'snippets', 'list'
     )
-    click.echo(json.dumps(response, indent=4))
+    Printer(json_snippet=response, is_list=True).print()
