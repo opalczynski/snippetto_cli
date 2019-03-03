@@ -103,8 +103,8 @@ def add_snippet(ctx, slug, tags, description, file, start, end):
 def edit_snippet(ctx, slug, tags, description, file, start, end):
     """Will edit snippet with given slug.
 
-    It allows to override tags and file. You can also specify start and end
-    lines numbers."""
+    It allows to override tags, file, and change description.
+    You can also specify start and end lines numbers."""
     api = ctx.obj['api']
     instance_id = api.get_id_by_slug(slug)
     tags = TagParser(raw_tags=tags).parse()
@@ -142,9 +142,10 @@ def edit_snippet(ctx, slug, tags, description, file, start, end):
 def search_snippet(ctx, slug, tags):
     """Allows to search for snippets.
 
-    Search is based on tag and slug. Tags search is AND
-    like - this means that if you specify two tags: `python,django` only
-    those snippets will be returned that have both tags.
+    Search is based on tag and slug. Tags search is OR
+    like - this means that if you specify two tags: `python,django` all snippets
+    that have either `python` or `django` will be returned. You should take
+    care to make your tags specific.
     """
     def snippet_search(ctx, path=None):
         if not tags and not slug:
