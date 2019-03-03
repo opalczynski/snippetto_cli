@@ -6,8 +6,8 @@ import requests
 from click import ClickException
 from snipetto.core.configuration import (
     CONFIG_PATH,
-    SNIPETTO_HOST,
-    SNIPETTO_PATH_CONFIGURATION
+    SNIPPETTO_HOST,
+    SNIPPETTO_PATH_CONFIGURATION
 )
 
 
@@ -31,8 +31,8 @@ METHOD_MAP = {
 class APIService:
 
     def __init__(self):
-        self.host = SNIPETTO_HOST
-        self.configuration_path = SNIPETTO_PATH_CONFIGURATION
+        self.host = SNIPPETTO_HOST
+        self.configuration_path = SNIPPETTO_PATH_CONFIGURATION
         self.paths = {}
         self.token = None
         self.session = requests.session()
@@ -50,11 +50,13 @@ class APIService:
 
     def _request(self, path, instance_id=None, method='get', **kwargs):
         http_method = getattr(self.session, method)
-        response = http_method(
-            self._build_url(
+        if not path.startswith('http'):
+            path = self._build_url(
                 path=path,
                 instance_id=instance_id
-            ),
+            )
+        response = http_method(
+            path,
             headers={
                 'Content-Type': 'application/json',
                 'Authorization': 'Token {}'.format(self.token),
@@ -100,8 +102,11 @@ class APIService:
         self._initialize_user()
 
     def request(self, app_name, endpoint_name,
-                action=ActionTypeE.LIST, **kwargs):
-        path = self.paths[app_name][endpoint_name]
+                action=ActionTypeE.LIST,
+                path=None, **kwargs):
+        if not path:
+            # if we provide path - ignore the creation;
+            path = self.paths[app_name][endpoint_name]
         instance_id = None
         if action in [ActionTypeE.EDIT,
                       ActionTypeE.DELETE,

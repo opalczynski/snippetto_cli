@@ -3,8 +3,11 @@ jobs:
   build:
     docker:
       - image: circleci/python:3.6.4
+      - image: trurlit/snippetto-service:test-ci
+
     working_directory: ~/snipetto_cli
     steps:
+      - setup_remote_docker
       - checkout
       - run: sudo chown -R circleci:circleci /usr/local/bin
       - run: sudo chown -R circleci:circleci /usr/local/lib/python3.6/site-packages
@@ -20,3 +23,6 @@ jobs:
       - run:
           name: Bandit
           command: bandit -r .
+      - run:
+          name: Test CLI
+          command: python setup.py test
