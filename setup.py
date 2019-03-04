@@ -1,14 +1,13 @@
-import os
-
 from setuptools import find_packages, setup
 
-README = open(os.path.join(os.path.dirname(__file__), 'README.md')).read()
+with open('README.md') as f:
+    long_description = f.read()
 
 setup(
     name='snippetto-cli',
     version='0.1.0',
     description='Snippetto command line interface',
-    long_description=README,
+    long_description=long_description,
     long_description_content_type='text/markdown',
     author='Sebastian Opalczynski',
     author_email='sebastian.opalczynski@trurl.it',
