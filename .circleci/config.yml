@@ -25,4 +25,4 @@ jobs:
           command: bandit -r .
       - run:
           name: Test CLI
-          command: python setup.py test
+          command: export SNIPPETTO_HOST=http://127.0.0.1:8000; python setup.py test
