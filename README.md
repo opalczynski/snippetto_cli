@@ -9,9 +9,7 @@ Simple CLI to handle Snipetto Service for storing code snippets.
 
 ## Installation
 
-I will add this to `pypi` soon, but currently simple:
-
-    pip3 install https://github.com/opalczynski/snippetto_cli/archive/master.zip 
+    pip3 install snippetto 
 
 ## Build
 

@@ -143,9 +143,9 @@ def search_snippet(ctx, slug, tags):
     """Allows to search for snippets.
 
     Search is based on tag and slug. Tags search is OR
-    like - this means that if you specify two tags: `python,django` all snippets
-    that have either `python` or `django` will be returned. You should take
-    care to make your tags specific.
+    like - this means that if you specify two tags: `python,django` all
+    snippets that have either `python` or `django` will be returned.
+    You should take care to make your tags specific.
     """
     def snippet_search(ctx, path=None):
         if not tags and not slug:
