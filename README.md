@@ -1,3 +1,9 @@
+# Archived and abbadonned
+
+You can still use the codebase as reference, but I've decided to stop working on this project. 
+Probably will someday came up with something new, as was using snippetto for couple of years, and 
+it was handy couple of times.
+
 # Snipetto CLI 
 
 Simple CLI to handle Snipetto Service for storing code snippets.
